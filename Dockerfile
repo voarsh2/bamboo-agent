@@ -11,4 +11,12 @@ RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
     apt-get update && \
     apt-get install -y docker-ce
 
-USER ${BAMBOO_USER}
+# Additional instructions if needed
+
+# Set the user to root
+USER root
+
+# Additional instructions if needed
+
+# Save the image with root as the default user
+CMD ["/bin/bash"]
