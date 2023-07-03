@@ -13,7 +13,18 @@ RUN set -x \
     wget \
     lsb-release \
     && rm -rf /var/lib/apt/lists/*
-    
+
+
+
+# Create a script to modify the sudoers file
+RUN echo '#!/bin/sh \n\
+echo "bamboo ALL=(ALL) NOPASSWD: /usr/bin/docker" > /etc/sudoers.d/bamboo-user && \
+chmod 0440 /etc/sudoers.d/bamboo-user' > /usr/local/bin/modify_sudoers.sh && \
+chmod +x /usr/local/bin/modify_sudoers.sh
+
+# Modify the sudoers file during the build process
+RUN /usr/local/bin/modify_sudoers.sh
+
 #   Install Docker
 
 RUN set -x \
@@ -32,17 +43,7 @@ RUN set -x \
       docker-compose-plugin
 
 WORKDIR ${BAMBOO_USER_HOME}
-USER ${BAMBOO_USER}
 
-
-# Create a script to modify the sudoers file
-RUN echo '#!/bin/sh \n\
-echo "bamboo ALL=(ALL) NOPASSWD: /usr/bin/docker" > /etc/sudoers.d/bamboo-user && \
-chmod 0440 /etc/sudoers.d/bamboo-user' > /usr/local/bin/modify_sudoers.sh && \
-chmod +x /usr/local/bin/modify_sudoers.sh
-
-# Modify the sudoers file during the build process
-RUN /usr/local/bin/modify_sudoers.sh
 
 # Switch back to the Bamboo user
 USER bamboo
