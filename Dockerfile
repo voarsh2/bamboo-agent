@@ -11,10 +11,10 @@ RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
     apt-get update && \
     apt-get install -y docker-ce
 
+# Add the Bamboo user to the docker group
+RUN usermod -a -G docker ${BAMBOO_USER}
+
+# Switch back to the bamboo user
+USER ${BAMBOO_USER}
+
 # Additional instructions if needed
-
-# Set the user to root
-USER root
-
-# Additional instructions if needed
-
