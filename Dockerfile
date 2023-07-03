@@ -34,33 +34,6 @@ RUN set -x \
 WORKDIR ${BAMBOO_USER_HOME}
 USER ${BAMBOO_USER}
 
-RUN set -x \
-    && ${BAMBOO_USER_HOME}/bamboo-update-capability.sh "system.oc.executable" "$(which oc)" \
-    && ${BAMBOO_USER_HOME}/bamboo-update-capability.sh "oc" "$(which oc)"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 # Create a script to modify the sudoers file
 RUN echo '#!/bin/sh \n\
