@@ -15,16 +15,6 @@ RUN set -x \
     && rm -rf /var/lib/apt/lists/*
 
 
-
-# Create a script to modify the sudoers file
-RUN echo '#!/bin/sh \n\
-echo "bamboo ALL=(ALL) NOPASSWD: /usr/bin/docker" > /etc/sudoers.d/bamboo-user && \
-chmod 0440 /etc/sudoers.d/bamboo-user' > /usr/local/bin/modify_sudoers.sh && \
-chmod +x /usr/local/bin/modify_sudoers.sh
-
-# Modify the sudoers file during the build process
-RUN /usr/local/bin/modify_sudoers.sh
-
 #   Install Docker
 
 RUN set -x \
