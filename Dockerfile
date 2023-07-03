@@ -3,7 +3,7 @@ USER root
 
 # Install Docker dependencies
 RUN apt-get update && \
-    apt-get install -y apt-transport-https ca-certificates curl software-properties-common
+    apt-get install -y apt-transport-https ca-certificates curl software-properties-common sudo
 
 # Add Docker repository and install Docker
 RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
@@ -11,10 +11,10 @@ RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
     apt-get update && \
     apt-get install -y docker-ce
 
-# Add the Bamboo user to the docker group
-RUN usermod -a -G docker ${BAMBOO_USER}
+# Allow Bamboo user to run Docker with sudo
+RUN echo "${BAMBOO_USER} ALL=(ALL) NOPASSWD: /usr/bin/docker" >> /etc/sudoers.d/bamboo-user
 
-# Switch back to the bamboo user
+# Switch back to the Bamboo user
 USER ${BAMBOO_USER}
 
 # Additional instructions if needed
