@@ -12,7 +12,8 @@ RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
     apt-get install -y docker-ce
 
 # Allow Bamboo user to run Docker with sudo
-RUN echo "bamboo ALL=(ALL) NOPASSWD: /usr/bin/docker" > /etc/sudoers.d/bamboo-user && \
+RUN sed -i 's/Defaults    requiretty/#Defaults    requiretty/g' /etc/sudoers && \
+    echo "bamboo ALL=(ALL) NOPASSWD: /usr/bin/docker" > /etc/sudoers.d/bamboo-user && \
     chmod 0440 /etc/sudoers.d/bamboo-user
 
 # Switch back to the Bamboo user
