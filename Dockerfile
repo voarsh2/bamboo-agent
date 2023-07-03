@@ -18,5 +18,3 @@ USER root
 
 # Additional instructions if needed
 
-# Save the image with root as the default user
-CMD ["/bin/bash"]
