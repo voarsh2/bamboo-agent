@@ -9,9 +9,6 @@ RUN apt-get update && \
     apt-get update && \
     apt-get -y install docker-ce docker-ce-cli containerd.io
 
-# Create the docker group (if it doesn't exist)
-RUN groupadd docker
-
 # Add the bamboo user to the docker group
 RUN usermod -aG docker bamboo
 
