@@ -12,12 +12,6 @@ RUN apt-get update && \
 # Add the bamboo user to the docker group
 RUN usermod -aG docker bamboo
 
-# Grant permissions to connect to the Docker daemon
-RUN chmod 666 /var/run/docker.sock
-
-# Configure DOCKER_HOST environment variable
-RUN echo 'DOCKER_HOST="tcp://docker:2375"' >> /etc/environment
-
 # Switch back to the Bamboo user
 USER bamboo
 
