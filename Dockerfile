@@ -1,21 +1,24 @@
 FROM atlassian/bamboo-agent-base:latest
-USER root
 
-# Install required packages
-RUN apt-get update && \
-    apt-get -y install apt-transport-https ca-certificates curl software-properties-common && \
-    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
-    add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" && \
-    apt-get update && \
-    apt-get -y install docker-ce docker-ce-cli containerd.io
+# Docker-in-Docker
+# Configuration parameters
+ENV DOCKER_VERSION 20.10.7
+ENV DOCKER_COMPOSE_VERSION 1.29.2
+ENV DIND_COMMIT 9b55aab2c15bcb573919734d349e6bb4d996d0de
 
-# Add the bamboo user to the docker group
+# Install Docker binary
+RUN curl -fsSL https://download.docker.com/linux/static/stable/x86_64/docker-$DOCKER_VERSION.tgz | tar xzvf - --strip-components=1 -C /usr/local/bin
+
+# Install Docker Compose
+RUN curl -fsSL https://github.com/docker/compose/releases/download/$DOCKER_COMPOSE_VERSION/docker-compose-Linux-x86_64 -o /usr/local/bin/docker-compose && chmod +x /usr/local/bin/docker-compose
+
+# Allow bamboo to access the docker daemon
 RUN usermod -aG docker bamboo
 
-# Switch back to the Bamboo user
-USER bamboo
+# Install the helper script to make docker-in-docker possible
+RUN wget "https://raw.githubusercontent.com/docker/docker/$DIND_COMMIT/hack/dind" -O /usr/local/bin/dind && chmod +x /usr/local/bin/dind
 
-# Set the working directory
-WORKDIR ${BAMBOO_USER_HOME}
+# By default, start the docker daemon inside the container
+ENV DOCKER_DAEMON_AUTOSTART 1
 
-# Additional instructions if needed
+ENTRYPOINT ["/usr/local/bin/dind"]
