@@ -11,10 +11,6 @@ RUN apt-get update -y && \
 RUN apt-get install -y gnupg
 
 
-# Allow bamboo to access the docker daemon
-RUN usermod -aG docker bamboo
-
-
 ENV DOWNLOAD_URL="https://download.docker.com"
 ENV APT_URL="deb [arch=arm64] ${DOWNLOAD_URL}/linux/ubuntu bionic edge"
 
@@ -25,6 +21,8 @@ RUN apt-get update -yq && \
     apt-get install -y -qq --no-install-recommends docker-ce
 
 
+# Allow bamboo to access the docker daemon
+RUN usermod -aG docker bamboo
 
 USER ${BAMBOO_USER}
 
