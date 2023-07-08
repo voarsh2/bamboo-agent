@@ -10,8 +10,6 @@ RUN apt-get update -y && \
 
 RUN apt-get install -y gnupg
 
-RUN addgroup ${BAMBOO_GROUP} && \
-     adduser --home ${BAMBOO_USER_HOME} --ingroup ${BAMBOO_GROUP} --disabled-password ${BAMBOO_USER}
 
 # Allow bamboo to access the docker daemon
 RUN usermod -aG docker bamboo
@@ -26,7 +24,7 @@ RUN echo "${APT_URL}" > /etc/apt/sources.list.d/docker.list
 RUN apt-get update -yq && \
     apt-get install -y -qq --no-install-recommends docker-ce
 
-RUN adduser bamboo docker
+
 
 USER ${BAMBOO_USER}
 
