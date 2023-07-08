@@ -10,13 +10,6 @@ RUN apt-get update -y && \
 
 RUN apt-get install -y gnupg
 
-
-ENV DOWNLOAD_URL="https://download.docker.com"
-ENV APT_URL="deb [arch=arm64] ${DOWNLOAD_URL}/linux/ubuntu bionic edge"
-
-RUN curl -fsSL ${DOWNLOAD_URL}/linux/ubuntu/gpg | apt-key add -qq - >/dev/null
-RUN echo "${APT_URL}" > /etc/apt/sources.list.d/docker.list
-
 RUN apt-get update -yq && \
     apt-get install -y -qq --no-install-recommends docker-ce
 
