@@ -6,9 +6,9 @@ USER root
 RUN apt-get update -y && \
 apt-get install -y wget unzip tar
 
-# Install gnupg and lsb-release
+# Install gnupg, lsb-release, and software-properties-common
 RUN apt-get update -y && \
-    apt-get install -y gnupg lsb-release
+    apt-get install -y gnupg lsb-release software-properties-common
 
 
 RUN curl -sSL https://sonarcloud.io/static/cpp/build-wrapper-linux-x86.zip -o build-wrapper-linux-x86.zip \
