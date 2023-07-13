@@ -1,33 +1,22 @@
 FROM atlassian/bamboo-agent-base:latest
-FROM sonarsource/sonar-scanner-cli:4.7 as sonars
-# Install SonarScanner
-#### Install Sonar Scanner
 USER root
-ENV SONAR_SCANNER_HOME /opt/sonar-scanner
-COPY --from=sonars /opt/sonar-scanner ${SONAR_SCANNER_HOME}
 
+# Install Docker dependencies
+RUN apt-get update && \
+    apt-get install -y apt-transport-https ca-certificates curl software-properties-common sudo
 
-RUN apt-get update -y && \
-apt-get install -y wget unzip tar
-
-# Install gnupg, lsb-release, and software-properties-common
-RUN apt-get update -y && \
-    apt-get install -y gnupg lsb-release software-properties-common
-
-
-RUN apt-get update -y && \
-    apt-get install -y apt-transport-https ca-certificates curl git make
-
-
-RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
-RUN add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-RUN apt-get update -y && \
+# Add Docker repository and install Docker
+RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
+    add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" && \
+    apt-get update && \
     apt-get install -y docker-ce
 
-VOLUME /var/run/docker.sock
+# Allow Bamboo user to run Docker with sudo
+RUN sed -i 's/Defaults    requiretty/#Defaults    requiretty/g' /etc/sudoers && \
+    echo "bamboo ALL=(ALL) NOPASSWD: /usr/bin/docker" > /etc/sudoers.d/bamboo-user && \
+    chmod 0440 /etc/sudoers.d/bamboo-user
 
-RUN ${BAMBOO_USER_HOME}/bamboo-update-capability.sh "system.builder.sos" /usr/local/bin/sonar-scanner
-RUN ${BAMBOO_USER_HOME}/bamboo-update-capability.sh "system.docker.executable" /usr/bin/docker
-RUN ${BAMBOO_USER_HOME}/bamboo-update-capability.sh "system.builder.sos" ${SONAR_SCANNER_HOME}
-
+# Switch back to the Bamboo user
 USER bamboo
+
+# Additional instructions if needed
