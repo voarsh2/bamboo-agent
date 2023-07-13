@@ -29,7 +29,7 @@ RUN apt-get update -y && \
 
 VOLUME /var/run/docker.sock
 
-RUN ${BAMBOO_USER_HOME}/bamboo-update-capability.sh "system.sonarscanner.executable" /usr/local/bin/sonar-scanner
+RUN ${BAMBOO_USER_HOME}/bamboo-update-capability.sh "system.builder.sos" /usr/local/bin/sonar-scanner
 RUN ${BAMBOO_USER_HOME}/bamboo-update-capability.sh "system.docker.executable" /usr/bin/docker
 
 USER bamboo
