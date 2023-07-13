@@ -1,7 +1,11 @@
 FROM atlassian/bamboo-agent-base:latest
-
+FROM sonarsource/sonar-scanner-cli:4.7 as sonars
 # Install SonarScanner
+#### Install Sonar Scanner
 USER root
+ENV SONAR_SCANNER_HOME /opt/sonar-scanner
+COPY --from=sonars /opt/sonar-scanner ${SONAR_SCANNER_HOME}
+
 
 RUN apt-get update -y && \
 apt-get install -y wget unzip tar
@@ -9,13 +13,6 @@ apt-get install -y wget unzip tar
 # Install gnupg, lsb-release, and software-properties-common
 RUN apt-get update -y && \
     apt-get install -y gnupg lsb-release software-properties-common
-
-
-RUN curl -sSL https://sonarcloud.io/static/cpp/build-wrapper-linux-x86.zip -o build-wrapper-linux-x86.zip \
-    && unzip build-wrapper-linux-x86.zip \
-    && rm build-wrapper-linux-x86.zip \
-    && mv build-wrapper-linux-x86 /usr/local/bin/
-
 
 
 RUN apt-get update -y && \
@@ -31,5 +28,6 @@ VOLUME /var/run/docker.sock
 
 RUN ${BAMBOO_USER_HOME}/bamboo-update-capability.sh "system.builder.sos" /usr/local/bin/sonar-scanner
 RUN ${BAMBOO_USER_HOME}/bamboo-update-capability.sh "system.docker.executable" /usr/bin/docker
+RUN ${BAMBOO_USER_HOME}/bamboo-update-capability.sh "system.builder.sos" ${SONAR_SCANNER_HOME}
 
 USER bamboo
